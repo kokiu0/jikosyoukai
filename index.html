@@ -2,111 +2,179 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>sss | Dark Profile</title>
+<title>sss | Final Form</title>
 
 <style>
 body {
   margin: 0;
   height: 100vh;
+  background: #000;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #000;
   font-family: 'Segoe UI', sans-serif;
-  overflow: hidden;
   color: white;
+  cursor: none;
 }
 
-/* 背景アニメーション */
-body::before {
-  content: "";
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, #0ff 0%, transparent 40%),
-              radial-gradient(circle, #f0f 0%, transparent 40%),
-              radial-gradient(circle, #00f 0%, transparent 40%);
-  background-position: 20% 30%, 80% 70%, 50% 50%;
-  background-repeat: no-repeat;
-  animation: moveBg 10s linear infinite;
-  opacity: 0.15;
+/* 背景ゆがみ用 */
+.background {
+  position: fixed;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle at center, #1a001a, #000);
+  z-index: 0;
+  transition: transform 0.1s;
 }
 
-@keyframes moveBg {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* パーティクル */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
+/* カード */
 .card {
   position: relative;
-  background: rgba(20,20,20,0.9);
+  z-index: 3;
+  background: rgba(15,0,20,0.95);
   padding: 50px;
   border-radius: 20px;
   text-align: center;
-  width: 350px;
-  box-shadow: 0 0 30px #0ff;
-  animation: fadeIn 1.5s ease forwards;
-  opacity: 0;
-}
-
-@keyframes fadeIn {
-  to { opacity: 1; }
+  width: 420px;
+  box-shadow: 0 0 50px #f0f;
 }
 
 h1 {
   font-size: 3em;
-  margin: 0;
-  letter-spacing: 5px;
-  color: #0ff;
-  text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-  animation: glitch 2s infinite;
+  letter-spacing: 8px;
+  color: #f0f;
+  text-shadow: 0 0 15px #f0f;
 }
 
-/* グリッチ風 */
-@keyframes glitch {
-  0% { text-shadow: 2px 2px #f0f, -2px -2px #0ff; }
-  25% { text-shadow: -2px 2px #f0f, 2px -2px #0ff; }
-  50% { text-shadow: 2px -2px #f0f, -2px 2px #0ff; }
-  75% { text-shadow: -2px -2px #f0f, 2px 2px #0ff; }
-  100% { text-shadow: 2px 2px #f0f, -2px -2px #0ff; }
+.typing {
+  margin-top: 25px;
+  border-right: 2px solid #f0f;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  animation: typing 4s steps(40,end) forwards, blink .8s infinite;
 }
 
-p {
-  margin-top: 20px;
-  opacity: 0.7;
-  font-size: 1.1em;
-}
+@keyframes typing { from{width:0} to{width:100%} }
+@keyframes blink { 50%{border-color:transparent} }
 
 .btn {
   display: inline-block;
-  margin-top: 30px;
+  margin-top: 40px;
   padding: 12px 30px;
   border-radius: 50px;
-  border: 2px solid #0ff;
-  color: #0ff;
+  border: 2px solid #f0f;
+  color: #f0f;
   text-decoration: none;
-  font-weight: bold;
-  transition: 0.3s;
-  box-shadow: 0 0 10px #0ff;
+  transition: .3s;
+}
+.btn:hover {
+  background:#f0f;
+  color:black;
+  box-shadow:0 0 40px #f0f;
 }
 
-.btn:hover {
-  background: #0ff;
-  color: black;
-  box-shadow: 0 0 30px #0ff;
-  transform: scale(1.1);
+/* 画面割れ */
+.crack {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("https://i.imgur.com/6QKQF5K.png") center/cover no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.crack.active {
+  animation: crackAnim .6s forwards;
+}
+@keyframes crackAnim {
+  0% { opacity:0; transform:scale(.8); }
+  50% { opacity:1; transform:scale(1.05); }
+  100% { opacity:0; transform:scale(1); }
 }
 </style>
-
 </head>
+
 <body>
+
+<div class="background" id="bg"></div>
+<canvas id="particles"></canvas>
+<div class="crack" id="crack"></div>
 
 <div class="card">
   <h1>sss</h1>
-  <p>Enter the dark side.</p>
-  <p>Neon. Shadow. Power.</p>
-  <a href="#" class="btn">ACCESS</a>
+  <div class="typing">Reality distortion activated...</div>
+  <a href="#" class="btn">AWAKEN</a>
 </div>
+
+<audio id="bgm" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b5f90.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* 背景ゆがみ */
+const bg = document.getElementById("bg");
+document.addEventListener("mousemove", e => {
+  let x = (e.clientX / window.innerWidth - 0.5) * 30;
+  let y = (e.clientY / window.innerHeight - 0.5) * 30;
+  bg.style.transform = `translate(${x}px,${y}px) scale(1.1)`;
+});
+
+/* パーティクル */
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+let particles=[];
+for(let i=0;i<100;i++){
+  particles.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*2,
+    d:Math.random()*1+0.5
+  });
+}
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="rgba(255,0,255,.7)";
+  ctx.beginPath();
+  particles.forEach(p=>{
+    ctx.moveTo(p.x,p.y);
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2,true);
+  });
+  ctx.fill();
+  particles.forEach(p=>{
+    p.y+=p.d;
+    if(p.y>canvas.height){p.y=0;p.x=Math.random()*canvas.width;}
+  });
+}
+setInterval(draw,33);
+
+/* 画面割れ */
+const crack = document.getElementById("crack");
+document.addEventListener("click", ()=>{
+  crack.classList.add("active");
+  setTimeout(()=>crack.classList.remove("active"),600);
+});
+
+/* 音声ON（初回クリックで再生） */
+const bgm = document.getElementById("bgm");
+document.addEventListener("click", ()=>{
+  bgm.play();
+},{once:true});
+</script>
 
 </body>
 </html>
