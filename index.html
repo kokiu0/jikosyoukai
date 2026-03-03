@@ -1,1 +1,82 @@
-隅
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>sss | Profile</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      width: 320px;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      letter-spacing: 3px;
+    }
+
+    p {
+      opacity: 0.8;
+      font-size: 1.1em;
+    }
+
+    .line {
+      width: 60px;
+      height: 3px;
+      background: #00f5ff;
+      margin: 20px auto;
+      border-radius: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      border-radius: 30px;
+      background: #00f5ff;
+      color: black;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: white;
+      transform: translateY(-3px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>sss</h1>
+    <div class="line"></div>
+    <p>Welcome to my world.</p>
+    <p>Simple. Clean. Cool.</p>
+    <a href="#" class="btn">Follow Me</a>
+  </div>
+
+</body>
+</html>
+
